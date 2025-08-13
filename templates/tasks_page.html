@@ -1,0 +1,51 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="{% static 'tasks_page.css'%}">
+    <title>Task Manager</title>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="profile">
+            <div class="name">{{ name }}</div>
+            <div class="email">{{ email}}</div>
+        </div>
+        <div class="menu">
+            <div class="menu-item">My Day</div>
+            <div class="menu-item">Planned</div>
+            <div class="menu-item">Tasks</div>
+        </div>
+        <div class="new-list">
+            New list
+        </div>
+    </div>
+
+    <div class="main">
+        <div class="header">
+            <h1>My Day</h1>
+        </div>
+        <div class="task-list">
+            {% for task in tasks %}
+                <div class="task-item" id="{{ task.id }}" style="display: flex; gap: 10px; align-items:center;">
+                    <span class="span-item">{{ task.task }}</span>
+                    <form action="{% url 'delete_task' task.id %}" method="post" style="margin:0;">
+                        {% csrf_token %}
+                        <input type="hidden" name="task_id" value="{{ task.id }}">
+                        <button class="delete-btn" type="submit">Delete</button>
+                    </form>
+                </div>
+            {% empty %}
+                <p>No tasks yet.</p>
+            {% endfor %}
+        </div>
+        <div class="task-input-container">
+            <form action="{% url 'add_task' %}" method="POST" style="display: flex; gap: 10px;">
+                {% csrf_token %}
+                <input class="task-input" type="text" name="task" placeholder="Enter Task" required>
+                <button class="add-btn" type="submit">Add</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
